@@ -1,0 +1,5 @@
+SELECT TOP (1000) [idTarea]
+      ,[NombreParametro]
+      ,[Valor]
+  FROM [MitACD].[dbo].[ParametrosTareaEntrada]
+  where idtarea = 812;
