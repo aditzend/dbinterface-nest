@@ -5,6 +5,9 @@ import configuration from './config/configuration';
 import { DatabaseModule } from './database/database.module';
 import { InteractionModule } from './interaction/interaction.module';
 import { ParameterModule } from './parameter/parameter.module';
+import { TranscriptModule } from './transcript/transcript.module';
+import { AnalyticsInteractionModule } from './analytics-interaction/analytics-interaction.module';
+import { AnalyticsEventModule } from './analytics-event/analytics-event.module';
 
 @Module({
   imports: [
@@ -15,9 +18,11 @@ import { ParameterModule } from './parameter/parameter.module';
     DatabaseModule,
     InteractionModule,
     ParameterModule,
+    TranscriptModule,
+    AnalyticsInteractionModule,
+    AnalyticsEventModule,
   ],
 
   controllers: [AppController],
-  providers: [],
 })
 export class AppModule {}

@@ -1,15 +1,19 @@
-import { Injectable } from '@nestjs/common';
-import { Interaccion } from './interaccion.entity';
-import { OrigenCorte } from './origen_corte.entity';
-import { Campania } from './campania.entity';
+import { Injectable, Logger } from '@nestjs/common';
+import { Interaccion } from './entities/interaccion.entity';
+import { OrigenCorte } from './entities/origen_corte.entity';
+import { Campania } from './entities/campania.entity';
 import { Interaction } from './interaction.interface';
-import { Agente } from './agente.entity';
+import { Segment } from './segment.interface';
+import { Agente } from './entities/agente.entity';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository, DataSource } from 'typeorm';
-import { CausaTerminacion } from './causa_terminacion.entity';
-import { Grupo } from './grupo.entity';
-import { ModoCampania } from './modo_campania.entity';
-import { ResultadoGestion } from './resultado_gestion.entity';
+import { CausaTerminacion } from './entities/causa_terminacion.entity';
+import { ModoCampania } from './entities/modo_campania.entity';
+import { ResultadoGestion } from './entities/resultado_gestion.entity';
+import { ParametroCampania } from './entities/parametro_campania.entity';
+import { Grabacion } from './entities/grabacion.entity';
+import { Grupo } from './entities/grupo.entity';
+
 @Injectable()
 export class InteractionService {
   constructor(
@@ -30,7 +34,13 @@ export class InteractionService {
     private grupoRepo: Repository<Grupo>,
     @InjectRepository(ResultadoGestion)
     private resultadoGestionRepo: Repository<ResultadoGestion>,
+    @InjectRepository(ParametroCampania)
+    private parametroCampaniaRepo: Repository<ParametroCampania>,
+    @InjectRepository(Grabacion)
+    private grabacionRepo: Repository<Grabacion>,
   ) {}
+
+  logger = new Logger('InteractionService');
 
   campaign(idCampania: number): Promise<Campania> {
     return this.campaniaRepo.findOneBy({ idCampania });
@@ -44,10 +54,65 @@ export class InteractionService {
     return this.interactionRepo.findOneBy({ idInteraccion });
   }
 
+  async findTranscriptData(idInteraccion: string): Promise<any> {
+    const interaccion: Interaccion = await this.interactionRepo.findOneBy({
+      idInteraccion,
+    });
+
+    const campania: Campania = await this.campaniaRepo.findOneBy({
+      idCampania: interaccion.idCampania,
+    });
+
+    const parametrosCampania = await this.parametroCampaniaRepo.findBy({
+      idCampania: campania.idCampania,
+    });
+
+    return {
+      interaction_id: idInteraccion,
+      parameters: parametrosCampania,
+    };
+  }
+
   async findOneFull(idInteraccion: string): Promise<Interaction> {
     const interaccion: Interaccion = await this.interactionRepo.findOneBy({
       idInteraccion,
     });
+    this.logger.verbose(`findOneFull ${interaccion}`);
+
+    const grabaciones: Grabacion[] = await this.grabacionRepo.findBy({
+      idInteraccion,
+    });
+
+    const segmentProcessor = function (grabaciones: Grabacion[]): Segment[] {
+      if (grabaciones.length < 1) {
+        return [
+          {
+            segment_id: `${idInteraccion}-s1`,
+            started_at: new Date(),
+            duration: 0,
+          },
+        ];
+      } else {
+        return grabaciones.map((grabacion, index) => {
+          return {
+            segment_id: `${idInteraccion}-s${index + 1}`,
+            started_at: grabacion.Inicio,
+            duration: grabacion.Duracion,
+            total_duration: grabacion.Duracion,
+            extension: grabacion.Extension,
+            file: grabacion.FileName,
+            shoot_mode: 0,
+            audio_offset: 0,
+            processed: 0,
+            chat: '',
+            video_chat_recording: '',
+            auxiliar_chat_recording: '',
+          };
+        });
+      }
+    };
+
+    const segments: Segment[] = segmentProcessor(grabaciones);
 
     const origenCorte: OrigenCorte = await this.origenCorteRepo.findOneBy({
       idOrigenCorte: interaccion.OrigenCorte,
@@ -84,8 +149,9 @@ export class InteractionService {
       });
 
     return {
-      id: interaccion.idInteraccion,
+      interaction_id: interaccion.idInteraccion,
       started_at: interaccion.Inicio,
+      segments,
       crm_id: interaccion.idCRM,
       client: {
         id: interaccion.idCliente,
@@ -126,7 +192,6 @@ export class InteractionService {
         supervisor_name: supervisor.Nombre,
       },
 
-      segments: interaccion.segmentos,
       context: interaccion.Contexto,
       message_id: interaccion.idMensaje,
       case_id: interaccion.idCaso,

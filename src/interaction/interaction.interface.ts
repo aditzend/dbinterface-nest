@@ -1,6 +1,9 @@
+import { Segment } from './segment.interface';
+
 export interface Interaction {
-  id: string;
+  interaction_id: string;
   started_at: Date;
+  segments: Segment[];
   crm_id: string;
   client: {
     id: string;
@@ -38,7 +41,6 @@ export interface Interaction {
     supervisor_id: number;
     supervisor_name: string;
   };
-  segments: number;
   context: string;
   message_id: number;
   case_id: number;

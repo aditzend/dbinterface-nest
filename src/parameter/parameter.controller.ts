@@ -9,7 +9,7 @@ export class ParameterController {
   constructor(private readonly parameterService: ParameterService) {}
   logger = new Logger('ParameterController');
 
-  @Post('/outgoing')
+  @Post('outgoing')
   outgoingTaskParamsPost(
     @Body() createOutgoingTaskParamDto: CreateOutgoingTaskParamDto,
   ): Promise<any> {
@@ -18,13 +18,13 @@ export class ParameterController {
     );
   }
 
-  @Get('/outgoing/:tid')
+  @Get('outgoing/:tid')
   async getOutgoingTaskParamsByTaskId(@Param() tid: TaskIdParam) {
     this.logger.log(`outgoingTaskParams ${tid}`);
     return await this.parameterService.getOutgoingTaskParamsByTaskId(tid);
   }
 
-  @Get('/incoming/:tid')
+  @Get('incoming/:tid')
   async getIncomingTaskParamsByTaskId(@Param() tid: TaskIdParam) {
     this.logger.log(`incomingTaskParams ${tid}`);
     return this.parameterService.getIncomingTaskParamsByTaskId(tid);
