@@ -4,6 +4,6 @@ import { Controller, Get } from '@nestjs/common';
 export class AppController {
   @Get('version')
   getVersion(): string {
-    return 'Version 3 Branch: "incoming_task_params"';
+    return 'Version 3 Branch: "transcript-endpoints"';
   }
 }
