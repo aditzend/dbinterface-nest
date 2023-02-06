@@ -110,18 +110,18 @@ export class Agente {
   @Column()
   ContentType: string;
 
-  @Column()
-  usuarioMIM: string;
+  // @Column()
+  // usuarioMIM: string;
 
-  @Column()
-  passwordMIM: string;
+  // @Column()
+  // passwordMIM: string;
 
-  @Column()
-  esUsuario: number;
+  // @Column()
+  // esUsuario: number;
 
-  @Column()
-  esAgente: number;
+  // @Column()
+  // esAgente: number;
 
-  @Column()
-  Migrado: number;
+  // @Column()
+  // Migrado: number;
 }

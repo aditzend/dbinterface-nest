@@ -55,8 +55,8 @@ export class Interaccion {
   @Column()
   idCliente: string;
 
-  @Column()
-  CerradaPorTiempoMaxACW: number;
+  // @Column()
+  // CerradaPorTiempoMaxACW: number;
 
   @Column()
   Duracion: number;
