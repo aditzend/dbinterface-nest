@@ -195,7 +195,8 @@ export class InteractionService {
       context: interaccion.Contexto,
       message_id: interaccion.idMensaje,
       case_id: interaccion.idCaso,
-      closed_by_max_acw_time: interaccion.CerradaPorTiempoMaxACW,
+      closed_by_max_acw_time: 0,
+      // closed_by_max_acw_time: interaccion.CerradaPorTiempoMaxACW,
       duration: interaccion.Duracion,
       task_id: interaccion.idTarea,
     };
