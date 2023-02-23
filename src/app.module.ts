@@ -6,8 +6,6 @@ import { DatabaseModule } from './database/database.module';
 import { InteractionModule } from './interaction/interaction.module';
 import { ParameterModule } from './parameter/parameter.module';
 import { TranscriptModule } from './transcript/transcript.module';
-import { AnalyticsInteractionModule } from './analytics-interaction/analytics-interaction.module';
-import { AnalyticsEventModule } from './analytics-event/analytics-event.module';
 
 @Module({
   imports: [
@@ -15,12 +13,10 @@ import { AnalyticsEventModule } from './analytics-event/analytics-event.module';
       isGlobal: true,
       load: [configuration],
     }),
-    DatabaseModule,
     InteractionModule,
+    DatabaseModule,
     ParameterModule,
     TranscriptModule,
-    AnalyticsInteractionModule,
-    AnalyticsEventModule,
   ],
 
   controllers: [AppController],

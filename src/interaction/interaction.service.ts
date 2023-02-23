@@ -63,6 +63,8 @@ export class InteractionService {
       idCampania: interaccion.idCampania,
     });
 
+    this.logger.verbose(`Campania ${JSON.stringify(campania)}`);
+
     const parametrosCampania = await this.parametroCampaniaRepo.findBy({
       idCampania: campania.idCampania,
     });
@@ -74,10 +76,11 @@ export class InteractionService {
   }
 
   async findOneFull(idInteraccion: string): Promise<Interaction> {
+    this.logger.verbose(`trying to find interaction: [${idInteraccion}]`);
     const interaccion: Interaccion = await this.interactionRepo.findOneBy({
       idInteraccion,
     });
-    this.logger.verbose(`findOneFull ${interaccion}`);
+    this.logger.verbose(`findOneFull ${JSON.stringify(interaccion)}`);
 
     const grabaciones: Grabacion[] = await this.grabacionRepo.findBy({
       idInteraccion,
@@ -126,10 +129,18 @@ export class InteractionService {
     const campania: Campania = await this.campaniaRepo.findOneBy({
       idCampania: interaccion.idCampania,
     });
+    this.logger.verbose(`Campania ${JSON.stringify(campania)}`);
 
-    const modoCampania: ModoCampania = await this.modoCampaniaRepo.findOneBy({
-      idModoCampania: campania.ModoCampania,
-    });
+    // const modoCampania: ModoCampania = await this.modoCampaniaRepo.findOneBy({
+    //   idModoCampania: campania.ModoCampania,
+    // });
+
+    //TODO traer valor real
+
+    const modoCampania: ModoCampania = {
+      idModoCampania: 1,
+      Descripcion: 'Manual',
+    };
 
     const agente: Agente = await this.agenteRepo.findOneBy({
       idAgente: interaccion.idAgente,
@@ -179,7 +190,7 @@ export class InteractionService {
         description: origenCorte.Descripcion,
       },
       campaign: {
-        id: campania.idCampania,
+        id: interaccion.idCampania,
         name: campania.Nombre,
         mode: modoCampania.Descripcion,
       },
